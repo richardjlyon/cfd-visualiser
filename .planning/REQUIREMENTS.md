@@ -84,6 +84,27 @@ A non-specialist can land on the site, look at a single chart, and walk away wit
 
 *Filled in during roadmap creation — maps each REQ-ID to the phase that delivers it.*
 
-| REQ-ID | Phase |
-|--------|-------|
-| — | — |
+| REQ-ID | Phase | Status |
+|--------|-------|--------|
+| PIPE-01 | Phase 1 | Pending |
+| PIPE-02 | Phase 1 | Pending |
+| PIPE-03 | Phase 1 | Pending |
+| PIPE-04 | Phase 1 | Pending |
+| PIPE-05 | Phase 1 | Pending |
+| PIPE-06 | Phase 1 | Pending |
+| PIPE-07 | Phase 1 | Pending |
+| PIPE-08 | Phase 1 | Pending |
+| CHART-01 | Phase 1 | Pending |
+| EDIT-01 | Phase 1 | Pending |
+| EDIT-02 | Phase 1 | Pending |
+| EDIT-04 | Phase 1 | Pending |
+| EDIT-05 | Phase 1 | Pending |
+| OPS-01 | Phase 1 | Pending |
+| OPS-02 | Phase 1 | Pending |
+| OPS-03 | Phase 1 | Pending |
+| OPS-04 | Phase 1 | Pending |
+| OPS-05 | Phase 1 | Pending |
+| EDIT-03 | Phase 2 | Pending |
+| CHART-02 | Phase 2 | Pending |
+| CHART-03 | Phase 2 | Pending |
+| CHART-04 | Phase 2 | Pending |
