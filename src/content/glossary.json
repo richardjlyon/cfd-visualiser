@@ -1,8 +1,30 @@
 {
-  "CfD": "Contract for Difference — a government scheme that guarantees renewable generators a fixed price per MWh.",
-  "Strike price": "The guaranteed £/MWh a generator is paid under its CfD.",
-  "Reference price": "The market price the CfD is measured against.",
-  "IMRP": "Intermittent Market Reference Price — the wholesale benchmark used for wind and solar.",
-  "Allocation round": "A government auction round in which CfDs were awarded.",
-  "Investment Contract": "Pre-AR1 legacy scheme (2014) — CfDs awarded before the formal allocation rounds began. Shown under the raw label in v1; a clearer public-facing label is deferred to Phase 2 (resolves RESEARCH Open Q7)."
+  "cfd": {
+    "term": "CfD",
+    "definition": "Contract for Difference — a government scheme that guarantees renewable generators a fixed price per MWh."
+  },
+  "strike_price": {
+    "term": "Strike price",
+    "definition": "The guaranteed £/MWh a generator is paid under its CfD."
+  },
+  "reference_price": {
+    "term": "Reference price",
+    "definition": "The market price the CfD is measured against."
+  },
+  "imrp": {
+    "term": "IMRP",
+    "definition": "Intermittent Market Reference Price — the wholesale benchmark used for wind and solar CfDs."
+  },
+  "allocation_round": {
+    "term": "Allocation round",
+    "definition": "A government auction round in which CfDs were awarded to generators."
+  },
+  "intermittent": {
+    "term": "Intermittent",
+    "definition": "Generators (wind, solar) whose output depends on weather and cannot be scheduled on demand."
+  },
+  "dispatchable": {
+    "term": "Dispatchable",
+    "definition": "Generators (biomass, hydro) whose output can be turned on or off at will."
+  }
 }
