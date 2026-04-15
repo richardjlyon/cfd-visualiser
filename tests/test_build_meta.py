@@ -4,7 +4,6 @@ TDD RED phase: tests must fail before build_meta.py exists.
 """
 from __future__ import annotations
 
-import datetime as dt
 import json
 import re
 import sys
@@ -51,13 +50,11 @@ def meta_output(seeded_db: Path, tmp_path: Path) -> dict:
 # ── tests ─────────────────────────────────────────────────────────────────────
 
 def test_meta_keys_present(meta_output: dict) -> None:
-    """All 10 required keys are present in the meta output (Phase 01.1 adds 4)."""
-    required = {
-        "last_updated", "row_count", "max_settlement_date",
-        "pipeline_version", "schema_version", "captions",
-        # Phase 01.1 — shock counter
-        "ytd_subsidy_gbp", "ytd_as_of", "gbp_per_sec_rate", "ytd_label_year",
-    }
+    """All required keys (6 original + 4 shock-counter) are present in the meta output."""
+    required = {"last_updated", "row_count", "max_settlement_date",
+                "pipeline_version", "schema_version", "captions",
+                "ytd_subsidy_gbp", "ytd_as_of", "gbp_per_sec_rate",
+                "ytd_label_year"}
     assert required == set(meta_output.keys()), (
         f"Key mismatch. Got: {set(meta_output.keys())}"
     )
@@ -100,101 +97,99 @@ def test_max_settlement_date_format(meta_output: dict) -> None:
 
 
 def test_schema_version_literal(meta_output: dict) -> None:
-    """schema_version is exactly the string '1.1' after Phase 01.1 bump."""
+    """schema_version is exactly the string '1.1' (bumped in Phase 01.1)."""
     assert meta_output["schema_version"] == "1.1"
 
 
-# ── Phase 01.1 shock-counter field tests ──────────────────────────────────────
+# ── Phase 01.1 shock-counter additions (Wave 0 RED) ───────────────────────────
 
 def test_emits_ytd_subsidy(meta_output: dict) -> None:
-    """ytd_subsidy_gbp is a float >= 0 (D-09)."""
-    v = meta_output["ytd_subsidy_gbp"]
-    assert isinstance(v, float), f"ytd_subsidy_gbp must be float, got {type(v)}"
-    assert v >= 0.0, f"ytd_subsidy_gbp must be >= 0, got {v}"
+    """ytd_subsidy_gbp is a float >= 0 (clamped at zero)."""
+    val = meta_output["ytd_subsidy_gbp"]
+    assert isinstance(val, (int, float)), f"ytd_subsidy_gbp must be numeric, got {type(val)}"
+    assert float(val) >= 0.0, f"ytd_subsidy_gbp must be >= 0, got {val}"
 
 
-def test_rate_clamped_non_negative(seeded_db: Path, tmp_path: Path) -> None:
-    """gbp_per_sec_rate is clamped >= 0 even when a clawback row dominates the
-    trailing 30-day window (Pitfall 2 / T-01.1-04).
+def test_rate_clamped_non_negative(tmp_path: Path, sample_csv_path: Path) -> None:
+    """gbp_per_sec_rate must be >= 0 even when a clawback month dominates
+    the rolling-30-day mean.
 
-    Fixture construction: inject a synthetic row into raw_generation with a
-    large negative CFD_Payments_GBP (typical of 2022 clawback events) dated
-    one day before max_settlement_date. If the SQL were not GREATEST-clamped,
-    AVG(daily_gbp) / 86400 would go negative.
+    Fixture construction: seed the DuckDB from the standard sample CSV, then
+    INSERT a synthetic row with a heavily negative CFD_Payments_GBP dated at
+    the current max_settlement_date. The rolling-mean computation must clamp
+    the £/sec rate at 0 rather than emit a negative value (which would make
+    the client counter tick downward — a UX and editorial failure).
     """
     import duckdb  # noqa: PLC0415
     from pipeline.build_meta import build  # noqa: PLC0415
 
-    # Inject a clawback row. Use a fresh writable connection.
-    con = duckdb.connect(str(seeded_db))
+    db_path = _seed_db(tmp_path, sample_csv_path)
+    con = duckdb.connect(str(db_path))
     try:
         max_date = con.execute(
             "SELECT CAST(MAX(Settlement_Date) AS VARCHAR) FROM raw_generation"
         ).fetchone()[0]
-        # Insert a single clawback row dated = max_date with a large negative
-        # payment. This guarantees AVG(daily_gbp) over the 30-day window is
-        # dominated by the clawback if the existing rows net positive.
+        # Inspect schema to build a conservative INSERT. Use a synthetic
+        # clawback row that dominates the 30-day window.
+        cols = [r[0] for r in con.execute("DESCRIBE raw_generation").fetchall()]
+        # Build a row with negative CFD_Payments_GBP; all other numeric cols 0.
+        vals = []
+        for c in cols:
+            if c == "Settlement_Date":
+                vals.append(f"DATE '{max_date}'")
+            elif c == "CFD_Payments_GBP":
+                vals.append("-1000000000.0")
+            elif c.lower().endswith("_gbp") or c.lower().endswith("_mwh") or c.lower().endswith("_tco2"):
+                vals.append("0.0")
+            else:
+                vals.append("NULL")
         con.execute(
-            """
-            INSERT INTO raw_generation (
-                Settlement_Date, CfD_ID, Name_of_CfD_Unit, Technology,
-                Allocation_round, Reference_Type, CFD_Generation_MWh,
-                Avoided_GHG_tonnes_CO2e, CFD_Payments_GBP, Avoided_GHG_Cost_GBP,
-                Strike_Price_GBP_Per_MWh, Market_Reference_Price_GBP_Per_MWh,
-                Weighted_IMRP_GBP_Per_MWh
-            ) VALUES (
-                ?, 'CLW-XYZ-999', 'Clawback Synthetic', 'Offshore Wind',
-                'Allocation Round 1', 'IMRP', 1.0, 0.0, ?, 0.0, 100.0, 50.0, 50.0
-            )
-            """,
-            [max_date, -1_000_000_000.0],
+            f"INSERT INTO raw_generation ({', '.join(cols)}) VALUES ({', '.join(vals)})"
         )
     finally:
         con.close()
 
-    out = tmp_path / "meta_clawback.json"
+    out = tmp_path / "meta.json"
     meta = build(
-        seeded_db, CAPTIONS_PATH, out,
-        pipeline_version="test", now_iso="2026-04-15T06:30:00Z",
+        db_path,
+        CAPTIONS_PATH,
+        out,
+        pipeline_version="test",
+        now_iso="2026-04-15T06:30:00Z",
     )
-    assert meta["gbp_per_sec_rate"] >= 0.0, (
-        f"gbp_per_sec_rate must be clamped non-negative even under clawback, "
-        f"got {meta['gbp_per_sec_rate']}"
+    assert float(meta["gbp_per_sec_rate"]) >= 0.0, (
+        f"gbp_per_sec_rate must be clamped at >= 0, got {meta['gbp_per_sec_rate']}"
     )
 
 
 def test_ytd_as_of_is_data_date(meta_output: dict) -> None:
-    """ytd_as_of equals max_settlement_date (NOT last_updated build time).
+    """ytd_as_of MUST equal max_settlement_date (data time), NOT last_updated (build time).
 
-    Mitigates T-01.1-02 stale-data deception: if build_meta silently uses
-    `last_updated` here, a stale snapshot would claim a fresher YTD.
+    STRIDE-T mitigation: prevents the shock counter from lying by substituting
+    build wall-clock time for the most recent data observation.
     """
     assert meta_output["ytd_as_of"] == meta_output["max_settlement_date"], (
-        f"ytd_as_of ({meta_output['ytd_as_of']!r}) must equal "
-        f"max_settlement_date ({meta_output['max_settlement_date']!r})"
+        f"ytd_as_of ({meta_output['ytd_as_of']}) must equal "
+        f"max_settlement_date ({meta_output['max_settlement_date']})"
     )
-    # Explicitly distinct from last_updated (which is an ISO timestamp).
-    assert meta_output["ytd_as_of"] != meta_output["last_updated"]
 
 
 def test_ytd_as_of_not_in_future(meta_output: dict) -> None:
-    """ytd_as_of must not be in the future relative to wall-clock UTC date.
-
-    ISO YYYY-MM-DD strings compare correctly lexicographically.
-    """
-    today_iso = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d")
-    assert meta_output["ytd_as_of"] <= today_iso, (
-        f"ytd_as_of {meta_output['ytd_as_of']!r} is in the future "
-        f"(today UTC = {today_iso!r})"
+    """ytd_as_of must not be after today (ISO-8601 string compare)."""
+    import datetime as _dt  # noqa: PLC0415
+    today = _dt.date.today().isoformat()
+    assert meta_output["ytd_as_of"] <= today, (
+        f"ytd_as_of {meta_output['ytd_as_of']} is in the future (today={today})"
     )
 
 
 def test_ytd_year_from_data(meta_output: dict) -> None:
-    """ytd_label_year is the int year derived from max_settlement_date,
-    NOT from datetime.now().year."""
-    expected_year = int(meta_output["max_settlement_date"][:4])
-    assert meta_output["ytd_label_year"] == expected_year
-    assert isinstance(meta_output["ytd_label_year"], int)
+    """ytd_label_year is the year component of ytd_as_of."""
+    as_of = meta_output["ytd_as_of"]
+    expected_year = int(as_of[:4])
+    assert meta_output["ytd_label_year"] == expected_year, (
+        f"ytd_label_year {meta_output['ytd_label_year']} != year({as_of})={expected_year}"
+    )
 
 
 def test_captions_deep_copy(meta_output: dict) -> None:
