@@ -34,7 +34,7 @@ Plans:
 - [x] 01-01-store-schema-units-PLAN.md — Units, Pandera schema, DuckDB upsert, Wave-0 fixtures
 - [x] 01-02-fetch-validate-archive-PLAN.md — httpx fetcher, validator, raw CSV archive, CLI entry, HC ping
 - [x] 01-03-framework-scaffold-editorial-PLAN.md — Framework scaffold, Pico CSS + Okabe-Ito tokens, glossary/captions, EDIT-05 linter
-- [ ] 01-04-chart-builder-and-page-PLAN.md — CHART-01 view-model builder, meta artefact, scissors.md page, JSON download
+- [x] 01-04-chart-builder-and-page-PLAN.md — CHART-01 view-model builder, meta artefact, scissors.md page, JSON download
 - [ ] 01-05-ci-deploy-keepalive-PLAN.md — CI + daily cron workflows, Cloudflare Pages deploy, keepalive, OG card, analytics
 
 ### Phase 2: Methodology + Remaining Charts
