@@ -27,15 +27,15 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. The chart page shows a pointed one-line caption, a visible source citation with the LCCC dataset URL, a "last updated" timestamp, a "What does this mean?" plain-language boxout, and a download link for the view-model JSON — all populated automatically from the build artefacts
   4. A maintainer receives an alert (Healthchecks.io ping miss) if the daily cron fails to complete, and a keepalive mechanism prevents the GitHub Actions 60-day inactivity cutoff from silently disabling the schedule
   5. The deployed site uses a privacy-preserving analytics approach (Plausible or none) — no cookie banner is required
-**Plans**: TBD
+**Plans**: 5 plans
 **UI hint**: yes
 
 Plans:
-- [ ] 01-01: DuckDB schema, idempotent store writer, and unit-constant fixtures
-- [ ] 01-02: Fetcher, Pandera validator, raw CSV archive, timezone convention, and dead-man's switch
-- [ ] 01-03: Observable Framework scaffold, Pico CSS design system, editorial caption template, and EDIT-05 grammar rule
-- [ ] 01-04: CHART-01 scissors (3c) chart-model builder, Framework page, and OPS-04 downloadable JSON
-- [ ] 01-05: GitHub Actions cron, Cloudflare Pages deploy, keepalive, OPS-05 analytics decision
+- [x] 01-01-store-schema-units-PLAN.md — Units, Pandera schema, DuckDB upsert, Wave-0 fixtures
+- [ ] 01-02-fetch-validate-archive-PLAN.md — httpx fetcher, validator, raw CSV archive, CLI entry, HC ping
+- [x] 01-03-framework-scaffold-editorial-PLAN.md — Framework scaffold, Pico CSS + Okabe-Ito tokens, glossary/captions, EDIT-05 linter
+- [ ] 01-04-chart-builder-and-page-PLAN.md — CHART-01 view-model builder, meta artefact, scissors.md page, JSON download
+- [ ] 01-05-ci-deploy-keepalive-PLAN.md — CI + daily cron workflows, Cloudflare Pages deploy, keepalive, OG card, analytics
 
 ### Phase 2: Methodology + Remaining Charts
 **Goal**: The methodology page is live (gating CHART-02), and all four v1 charts are public — giving visitors the complete editorial picture of CfD cost, carbon efficiency, subsidy concentration, and intermittency
@@ -46,7 +46,7 @@ Plans:
   2. A visitor can use the £/tCO₂ avoided explorer (CHART-02 / 3d) to filter by allocation round, technology, and year, and see the UK ETS price and DEFRA social cost of carbon as reference overlays
   3. A visitor can explore the cumulative consumer subsidy chart (CHART-03 / 3b + 6a), view the stacked technology breakdown, and interact with the Lorenz curve scatter to see subsidy concentration
   4. A visitor can view the daily generation heatmap (CHART-04 / 2a) on a mobile device at narrower than 768px and see a readable simplified fallback (weekly or monthly grid) rather than an illegible full heatmap
-**Plans**: TBD
+**Plans**: 5 plans
 **UI hint**: yes
 
 Plans:
