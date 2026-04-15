@@ -33,6 +33,7 @@ ROUNDS: frozenset[str] = frozenset(
         "Allocation Round 2",
         "Allocation Round 4",
         "Allocation Round 5",
+        "Allocation Round 6",
         "Investment Contract",
     }
 )
