@@ -3,6 +3,29 @@
     "caption": "CfD strike prices have tracked above wholesale prices in every year except 2022 — consumers paid the gap.",
     "source_name": "LCCC Actual CfD Generation and Avoided GHG Emissions",
     "source_url": "https://dp.lowcarboncontracts.uk/dataset/actual-cfd-generation-and-avoided-ghg-emissions",
-    "boxout": "The strike price is what generators are guaranteed per unit of electricity. The market reference price is the going wholesale rate. Consumers pay the difference through their bills — that gap is the subsidy."
+    "boxout": "The strike price is what generators are guaranteed per unit of electricity. The market reference price is the going wholesale rate. Consumers pay the difference through their bills — that gap is the subsidy.",
+    "card_title": "The scissors: what you pay vs the market",
+    "card_hook": "Strike prices tracked above market every year except 2022."
+  },
+  "chart-co2-avoided": {
+    "title": "The carbon price: are CfDs worth it per tonne?",
+    "caption": "Many years cost £200–400 per tonne of CO₂ avoided.",
+    "boxout": "Coming in Phase 02 — full £/tCO₂ avoided explorer with UK ETS price and DEFRA social cost overlays.",
+    "card_title": "The carbon price: are CfDs worth it per tonne?",
+    "card_hook": "Many years cost £200–400 per tonne of CO₂ avoided — above the government's own carbon value."
+  },
+  "chart-cumulative-subsidy": {
+    "title": "Cumulative subsidy: who gets the money?",
+    "caption": "Around 80% of total subsidy goes to fewer than 10 projects.",
+    "boxout": "Coming in Phase 02 — cumulative consumer subsidy stacked by technology with a Lorenz concentration scatter.",
+    "card_title": "Cumulative subsidy: who gets the money?",
+    "card_hook": "Around 80% of total subsidy goes to fewer than 10 projects."
+  },
+  "chart-heatmap": {
+    "title": "Intermittency: when the wind stops blowing",
+    "caption": "Dunkelflaute weeks appear as voids in the daily generation grid.",
+    "boxout": "Coming in Phase 02 — daily generation heatmap (year × day-of-year) for wind and solar with mobile-simplified weekly fallback.",
+    "card_title": "Intermittency: when the wind stops blowing",
+    "card_hook": "Dunkelflaute weeks appear as voids in the daily generation grid."
   }
 }
