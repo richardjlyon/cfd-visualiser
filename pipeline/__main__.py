@@ -1,4 +1,4 @@
-"""CLI entry: fetch -> validate -> store -> healthcheck (PIPE-01..05).
+"""CLI entry: fetch -> validate -> store -> build_chart_3c -> build_meta -> healthcheck.
 
 Exit codes:
 - 0  OK
@@ -6,6 +6,7 @@ Exit codes:
 - 2  schema drift (Pandera SchemaError — does NOT write to DuckDB)
 - 3  store failed (DuckDB write error)
 - 4  healthcheck ping failed (store completed successfully)
+- 5  chart/meta build failed
 
 Environment variables:
 - PIPELINE_HC_URL (optional): Healthchecks.io ping URL; silent skip if unset.
@@ -25,12 +26,15 @@ import pandera.errors
 from pipeline.fetch import fetch
 from pipeline.validate import read_and_validate
 from pipeline.store import upsert
+from pipeline.build_chart_3c import build as build_chart_3c
+from pipeline.build_meta import build as build_meta
 
 EXIT_OK = 0
 EXIT_FETCH_FAILED = 1
 EXIT_SCHEMA_DRIFT = 2
 EXIT_STORE_FAILED = 3
 EXIT_HEALTHCHECK_FAILED = 4
+EXIT_CHART_BUILD_FAILED = 5
 
 
 def run(
@@ -78,7 +82,20 @@ def run(
         print(f"ERROR: store failed: {e}", file=sys.stderr)
         return EXIT_STORE_FAILED
 
-    # Step 4: Healthcheck ping (optional)
+    # Step 4: Build chart view-model and meta artefacts
+    try:
+        build_chart_3c(db_path, Path("src/data/chart-3c.json"))
+        build_meta(
+            db_path,
+            Path("src/content/captions.json"),
+            Path("src/data/meta.json"),
+        )
+        print("ok: chart-3c.json and meta.json built")
+    except Exception as e:
+        print(f"ERROR: chart/meta build failed: {e}", file=sys.stderr)
+        return EXIT_CHART_BUILD_FAILED
+
+    # Step 5: Healthcheck ping (optional)
     if hc_url:
         try:
             # Re-use injected client for tests; fall back to a simple one-shot GET
