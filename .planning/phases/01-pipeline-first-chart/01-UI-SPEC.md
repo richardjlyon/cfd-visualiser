@@ -1,11 +1,12 @@
 ---
 phase: 1
 slug: pipeline-first-chart
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-04-14
 updated: 2026-04-15
+reviewed_at: 2026-04-15T00:00:00Z
 ---
 
 # Phase 1 — UI Design Contract
