@@ -1,0 +1,26 @@
+[project]
+name = "lowcarboncontracts"
+version = "0.1.0"
+description = "CfD Visualiser pipeline and site"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "matplotlib>=3.10.8",
+    "pandas>=3.0.2",
+    "polars>=1.39.3",
+    "duckdb>=1.5.2",
+    "pandera[polars]>=0.21.0",
+    "httpx>=0.28.1",
+    "pyarrow",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0",
+    "pytest-cov>=5.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-x -q --strict-markers"
+markers = ["live: hits live LCCC URL; skip offline"]
