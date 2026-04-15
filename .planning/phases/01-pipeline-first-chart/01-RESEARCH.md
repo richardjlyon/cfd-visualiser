@@ -796,42 +796,49 @@ Security enforcement for Phase 1 is light — static site, no user input, no aut
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Is `(Settlement_Date, CfD_ID)` a true unique key?**
    - What we know: Sample rows show unique combinations; CfD_IDs look stable.
    - What's unclear: Does LCCC ever issue a correction as a new row for the same date/unit, or do they replace?
    - Recommendation: Run `SELECT ... GROUP BY HAVING COUNT(*) > 1` on the committed CSV in Plan 01-01; if collisions exist, extend PK (e.g. add `Reference_Type`) or design a "latest-wins by ingest-timestamp" strategy.
+   - **RESOLVED:** Tested via unit test in Plan 01-01 Task 4 (`test_store.py::test_idempotent` + PK assertion on the committed fixture). If a collision is ever observed in live data the schema tests fail loudly and the PK is revisited in a follow-up phase.
 
 2. **Does `CfD_ID` ↔ `Name_of_CfD_Unit` stay 1:1 over time?**
    - What we know: Spot-checked rows agree.
    - What's unclear: Could a unit be renamed?
    - Recommendation: Add a unit test that asserts 1:1 on the reference CSV; alert on violation, use `CfD_ID` as the canonical key regardless.
+   - **RESOLVED:** 1:1 mapping asserted by a dedicated unit test added to Plan 01-01 Task 3 (`test_schema.py::test_cfd_id_name_one_to_one`). `CfD_ID` is canonical regardless; violation fails the schema suite in CI.
 
 3. **What time of day does the LCCC portal publish the daily update?**
    - What we know: Site says "daily".
    - What's unclear: Hour of day; which timezone (UK/Europe/London ≠ UTC, DST matters).
    - Recommendation: Observe the portal for 2–3 days before committing a cron time; default 06:30 UTC, verify after first live run, adjust if needed.
+   - **RESOLVED:** 06:30 UTC (Plan 01-05 `daily.yml` cron `'30 6 * * *'`). Revisit after first week of live runs if LCCC publishes later than observed.
 
 4. **Which `Allocation_round` values should CHART-01 show by default?**
    - What we know: 5 values exist (AR1, AR2, AR4, AR5, Investment Contract).
    - What's unclear: "All" averaged is visually cleaner but hides AR-level variance; per-round lines are noisy with 5 series.
    - Recommendation: Default view = "All" (weighted average across rounds, single strike line, single market line); checkbox toggle to split by round. Validate in planning.
+   - **RESOLVED:** Default view = "All" (generation-weighted average, two lines). Round-toggle in Plan 01-04 exposes the 5 per-round views.
 
 5. **Scheduler host — GitHub vs Gitea?**
    - What we know: Repo lives at `/Users/rjl/Code/gitea/...`.
    - What's unclear: Whether the user has a GitHub mirror; whether Gitea Actions is self-hosted and usable; whether Cloudflare Workers Cron is preferred.
    - Recommendation: **Resolve before Plan 01-05.** Cheapest path: mirror to GitHub for Actions; fallback: Gitea Actions on self-hosted runner; last-resort: Cloudflare Workers Cron invoking a GitHub webhook.
+   - **RESOLVED:** GitHub Actions via push-mirror is the default (option-a). Explicit checkpoint in Plan 01-05 Task 1 lets the user override to Gitea Actions (option-b) or Cloudflare Workers Cron (option-c).
 
 6. **Raw archive retention strategy?**
    - What we know: 3 MB/day gzipped ≈ 1 GB/yr in git.
    - What's unclear: Acceptable repo-size budget.
    - Recommendation: Commit last 90 days; rotate older to Cloudflare R2 via monthly pruning job. Confirm in planning.
+   - **RESOLVED:** Deferred to Phase 2. v1 commits every daily archive to git without rotation; documented as a known limitation in Plan 01-05's `docs/OPS.md` (repo-growth caveat + future rotation plan).
 
 7. **Which allocation rounds does "Investment Contract" actually cover for labelling purposes?**
    - What we know: Value appears 37,646 times; pre-dates AR1.
    - What's unclear: Display label ("Investment Contract" is jargon; "Pre-AR1 (2014)" may be clearer for a public audience).
    - Recommendation: Keep raw value as the key; add a display-label mapping in chart code (`"Investment Contract" → "Pre-AR1 legacy"`).
+   - **RESOLVED:** Deferred to Phase 2. v1 uses the raw `"Investment Contract"` value in UI labels; glossary note added to Plan 01-04 captions/glossary so non-specialists get a one-line gloss without changing the key.
 
 ---
 
