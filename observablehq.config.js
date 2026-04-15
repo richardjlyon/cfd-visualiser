@@ -1,6 +1,20 @@
 export default {
   title: "CfD Visualiser",
   root: "src",
+  theme: "near-midnight",
+  sidebar: false,
+  toc: false,
+  header: `<header class="topnav">
+  <a href="/" class="brand">⚡ CfD Visualiser</a>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/charts/scissors">Scissors</a>
+    <a href="/charts/co2-avoided">£/tCO₂</a>
+    <a href="/charts/cumulative-subsidy">Cumulative</a>
+    <a href="/charts/generation-heatmap">Heatmap</a>
+  </nav>
+</header>`,
+  pager: false,
   pages: [
     { name: "Home",                  path: "/" },
     { name: "Scissors",              path: "/charts/scissors" },
