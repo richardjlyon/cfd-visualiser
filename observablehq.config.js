@@ -2,7 +2,8 @@ export default {
   title: "CfD Visualiser",
   root: "src",
   pages: [
-    { name: "Home", path: "/" }
+    { name: "Home", path: "/" },
+    { name: "Scissors", path: "/charts/scissors" }
   ],
   head: `
 <link rel="stylesheet" href="/assets/pico.min.css">

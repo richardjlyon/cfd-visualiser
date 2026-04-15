@@ -5,7 +5,9 @@ toc: false
 
 # UK CfD: what consumers pay vs the market
 
-<p class="caption">The scissors chart lands next. This scaffold proves the Framework build and design system.</p>
+<p class="caption">CfD strike prices have tracked above wholesale prices in every year except 2022 — consumers paid the gap.</p>
+
+<p><a href="charts/scissors">View the scissors chart →</a></p>
 
 <aside class="boxout">
   <h3>What is this site?</h3>
