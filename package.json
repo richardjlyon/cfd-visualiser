@@ -3,12 +3,18 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "observable build",
-    "dev": "observable preview",
-    "clean": "observable clean"
+    "build:css": "tailwindcss -i ./src/styles/app.css -o ./src/assets/tailwind.css --minify",
+    "build": "npm run build:css && observable build",
+    "dev:css": "tailwindcss -i ./src/styles/app.css -o ./src/assets/tailwind.css --watch",
+    "dev": "npm run build:css && observable preview",
+    "clean": "observable clean && rm -f ./src/assets/tailwind.css"
   },
   "dependencies": {
     "@observablehq/framework": "1.13.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.2.2",
+    "tailwindcss": "4.2.2"
   },
   "engines": {
     "node": ">=20"
