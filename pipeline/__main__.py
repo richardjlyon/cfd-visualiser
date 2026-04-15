@@ -1,4 +1,4 @@
-"""CLI entry: fetch -> validate -> store -> build_chart_3c -> build_meta -> og_image -> healthcheck.
+"""CLI entry: fetch -> validate -> store -> build_chart_3c -> build_meta -> og_image -> chart_pngs -> healthcheck.
 
 Exit codes:
 - 0  OK
@@ -8,15 +8,20 @@ Exit codes:
 - 4  healthcheck ping failed (store completed successfully)
 - 5  chart/meta build failed
 - 7  og-image build failed (best-effort; store + chart already succeeded)
+- 8  per-chart PNG export failed (D-13..D-16; previous PNGs retained on disk
+     byte-for-byte because Step 2 schema-drift returns BEFORE this step)
 
 Environment variables:
 - PIPELINE_HC_URL (optional): Healthchecks.io ping URL; silent skip if unset.
 - PIPELINE_LATEST_CSV (optional): Override path for the downloaded CSV (default: data/latest.csv).
 - PIPELINE_RAW_DIR (optional): Override path for the raw gzip archive dir (default: data/raw).
 - PIPELINE_DB_PATH (optional): Override path for the DuckDB file (default: data/cfd.duckdb).
+- PIPELINE_CHART_ASSETS_DIR (optional): Override output dir for per-chart
+  download PNGs (default: src/assets/charts).
 """
 from __future__ import annotations
 
+import json
 import os
 import sys
 from pathlib import Path
@@ -30,6 +35,7 @@ from pipeline.store import upsert
 from pipeline.build_chart_3c import build as build_chart_3c
 from pipeline.build_meta import build as build_meta
 from pipeline.build_og_image import build as build_og
+from pipeline.export_chart_images import build_all as build_chart_images
 
 EXIT_OK = 0
 EXIT_FETCH_FAILED = 1
@@ -38,6 +44,7 @@ EXIT_STORE_FAILED = 3
 EXIT_HEALTHCHECK_FAILED = 4
 EXIT_CHART_BUILD_FAILED = 5
 EXIT_OG_FAILED = 7
+EXIT_IMAGE_EXPORT_FAILED = 8
 
 
 def run(
@@ -105,6 +112,34 @@ def run(
     except Exception as e:
         print(f"WARN: og-card build failed: {e}", file=sys.stderr)
         return EXIT_OG_FAILED
+
+    # Step 5b: Per-chart download PNGs (Phase 01.1 D-13..D-16)
+    #
+    # Schema-drift retention (T-01.1-04): Step 2 returns EXIT_SCHEMA_DRIFT
+    # before reaching here, so on a drift run this block never executes and
+    # any previously-deployed PNGs on disk remain byte-identical. No
+    # explicit guard needed — the guarantee is structural.
+    #
+    # max_date is read back from the meta.json artefact written by Step 4
+    # above (single local-file read; avoids changing build_meta's API).
+    try:
+        chart_assets_dir = Path(
+            os.environ.get("PIPELINE_CHART_ASSETS_DIR", "src/assets/charts")
+        )
+        captions_path = Path("src/content/captions.json")
+        captions = json.loads(captions_path.read_text())
+        meta = json.loads(Path("src/data/meta.json").read_text())
+        max_date = meta.get("max_settlement_date", "")
+        build_chart_images(
+            chart_assets_dir,
+            chart_json=Path("src/data/chart-3c.json"),
+            build_date=max_date,
+            captions=captions,
+        )
+        print("ok: per-chart PNGs built")
+    except Exception as e:
+        print(f"ERROR: per-chart PNG build failed: {e}", file=sys.stderr)
+        return EXIT_IMAGE_EXPORT_FAILED
 
     # Step 6: Healthcheck ping (optional)
     if hc_url:
