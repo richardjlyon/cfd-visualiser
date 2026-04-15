@@ -88,7 +88,7 @@ a.cfd-card:focus-visible {
 .topnav {
   background-color: var(--color-card);
   border-bottom: 1px solid var(--color-surface);
-  padding: 0.75rem 1.5rem;
+  padding: 0.65rem 1.5rem;
   display: flex;
   align-items: center;
   gap: 1.5rem;
@@ -98,17 +98,233 @@ a.cfd-card:focus-visible {
   font-weight: 600;
   font-size: 1.05rem;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
-.topnav nav { display: flex; gap: 1rem; flex: 1; justify-content: center; }
+.topnav .brand svg { color: #fbbf24; }
+.topnav nav { display: flex; gap: 1.25rem; flex: 1; justify-content: center; }
 .topnav nav a {
   color: var(--color-muted);
   text-decoration: none;
   font-size: 0.92rem;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 .topnav nav a:hover { color: var(--color-primary); }
-.topnav nav a.active { color: var(--color-accent); background: rgba(88, 166, 255, 0.08); }
+.topnav nav a.active { color: var(--color-accent); }
+.topnav nav a .dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 0 rgba(88,166,255,0.6);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(88,166,255,0.6); }
+  70%  { box-shadow: 0 0 0 6px rgba(88,166,255,0); }
+  100% { box-shadow: 0 0 0 0 rgba(88,166,255,0); }
+}
+.topnav-right { display: flex; align-items: center; gap: 0.75rem; }
+.topnav-right .more {
+  color: var(--color-muted);
+  text-decoration: none;
+  font-size: 0.92rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.topnav-right .more:hover { color: var(--color-primary); }
+.topnav-right .theme-toggle {
+  background: transparent;
+  border: 0;
+  color: var(--color-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+}
+.topnav-right .theme-toggle:hover { color: var(--color-primary); background: rgba(255,255,255,0.04); }
+
+/* Hero — match reference: small blue heading with left bar accent */
+.hero {
+  background-color: var(--color-card);
+  border-bottom: 1px solid var(--color-surface);
+  padding: 1.25rem 1.5rem;
+}
+.hero-row {
+  max-width: 80rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.hero-text { flex: 1; min-width: 280px; }
+.hero-title {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: -0.005em;
+  margin: 0 0 0.5rem;
+}
+.hero-title .bar {
+  display: inline-block;
+  width: 4px;
+  height: 1.1rem;
+  background: var(--color-accent);
+  border-radius: 2px;
+  margin-right: 0.55rem;
+}
+.hero-lead {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  max-width: 60rem;
+  line-height: 1.55;
+  margin: 0;
+}
+.hero-share {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: nowrap;
+}
+.hero-share .share-label {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  margin-right: 0.25rem;
+}
+
+/* Brand-coloured share icons (reference uses real brand glyphs+colours) */
+.share-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-muted);
+  text-decoration: none;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+  transition: transform 120ms, color 120ms, background-color 120ms;
+}
+.share-icon:hover { transform: translateY(-1px); }
+.share-icon.linkedin:hover { color: #0a66c2; background: rgba(10,102,194,0.12); }
+.share-icon.x:hover        { color: #ffffff; background: rgba(255,255,255,0.08); }
+.share-icon.bluesky:hover  { color: #1185fe; background: rgba(17,133,254,0.12); }
+.share-icon.facebook:hover { color: #1877f2; background: rgba(24,119,242,0.12); }
+.share-icon.whatsapp:hover { color: #25d366; background: rgba(37,211,102,0.12); }
+.share-icon.email:hover    { color: var(--color-accent); background: rgba(88,166,255,0.12); }
+.share-icon.copy:hover     { color: var(--color-accent); background: rgba(88,166,255,0.12); }
+
+/* Section heading + grid for chart cards */
+.charts-section {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem 2rem;
+}
+.section-title {
+  color: var(--color-primary);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 0.85rem;
+}
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+@media (min-width: 768px) {
+  .chart-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1100px) {
+  .chart-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Reference-styled chart card: header bar + legend + body + cta */
+.chart-card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-surface);
+  border-radius: 8px;
+  padding: 0.85rem 0.85rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.chart-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-surface);
+  padding-bottom: 0.45rem;
+}
+.chart-card-head h3 {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0;
+}
+.chart-card-meta {
+  font-size: 0.72rem;
+  color: var(--color-muted);
+}
+.chart-card-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.85rem;
+  font-size: 0.7rem;
+  color: var(--color-primary);
+}
+.chart-card-legend .sw { display: inline-flex; align-items: center; gap: 0.3rem; }
+.chart-card-legend .sw i {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 2px;
+}
+.chart-card-body {
+  background: var(--color-dashboard);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0;
+  min-height: 200px;
+}
+.chart-card-body svg { display: block; }
+.chart-card-cta {
+  font-size: 0.78rem;
+  color: var(--color-accent);
+  text-decoration: none;
+  align-self: flex-end;
+}
+.chart-card-cta:hover { text-decoration: underline; }
+
+/* Live ticker — phase 01.1 shock-counter requirement, reduced footprint */
+.ticker {
+  margin-top: 1rem;
+  background: var(--color-card);
+  border: 1px solid var(--color-surface);
+  border-radius: 8px;
+  padding: 0.65rem 0.95rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 1rem;
+  font-size: 0.85rem;
+}
+.ticker-label { color: var(--color-muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.ticker-value { font-size: 1.4rem; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.ticker-meta  { color: var(--color-muted); font-size: 0.75rem; }
+.ticker-link  { margin-left: auto; color: var(--color-accent); text-decoration: none; font-size: 0.78rem; }
+.ticker-link:hover { text-decoration: underline; }
 
 /* Share icons in hero — small uniform pill buttons */
 .share-icon {
