@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "build:css": "tailwindcss -i ./src/styles/app.css -o ./src/assets/tailwind.css --minify",
-    "build": "npm run build:css && observable build",
+    "build:static": "mkdir -p dist/content dist/assets/charts && cp src/content/glossary.json dist/content/glossary.json && cp src/assets/charts/chart-3c.png dist/assets/charts/chart-3c.png",
+    "build": "npm run build:css && observable build && npm run build:static",
     "dev:css": "tailwindcss -i ./src/styles/app.css -o ./src/assets/tailwind.css --watch",
     "dev": "npm run build:css && observable preview",
     "clean": "observable clean && rm -f ./src/assets/tailwind.css"

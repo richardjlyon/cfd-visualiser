@@ -32,17 +32,26 @@ for slug in scissors co2-avoided cumulative-subsidy generation-heatmap; do
   fi
 done
 
-# Per-chart PNGs
-for png in chart-3c.png chart-co2-avoided-placeholder.png \
-           chart-cumulative-subsidy-placeholder.png chart-heatmap-placeholder.png; do
-  [ -f "$DIST/assets/charts/$png" ] || fail "PNG $png missing from assets/charts/"
+# Per-chart PNGs — Framework hashes FileAttachment-referenced files under _file/,
+# but raw <a href="/assets/charts/chart-3c.png"> links need an unhashed physical copy
+# (performed by `npm run build:static`).
+for png in chart-3c.png chart-co2-avoided-placeholder chart-cumulative-subsidy-placeholder chart-heatmap-placeholder; do
+  if [ -f "$DIST/assets/charts/$png" ] || [ -f "$DIST/assets/charts/${png}.png" ]; then
+    continue
+  fi
+  if find "$DIST/_file/assets/charts" -maxdepth 1 -name "${png%.png}*.png" 2>/dev/null | grep -q .; then
+    continue
+  fi
+  fail "PNG $png missing from assets/charts/ (neither unhashed nor hashed _file/ path)"
 done
 
-# Tailwind bundle
-TW="$DIST/assets/tailwind.css"
-[ -f "$TW" ] || fail "assets/tailwind.css missing"
+# Tailwind bundle — Framework rewrites href="/assets/tailwind.css" to hashed _file/ path
+TW_UNHASHED="$DIST/assets/tailwind.css"
+TW_HASHED=$(find "$DIST/_file/assets" -maxdepth 1 -name 'tailwind.*.css' 2>/dev/null | head -1)
+TW="${TW_HASHED:-$TW_UNHASHED}"
+[ -f "$TW" ] || fail "tailwind.css missing (neither assets/ nor _file/assets/)"
 SIZE=$(wc -c < "$TW")
-[ "$SIZE" -gt 1024 ] || fail "assets/tailwind.css suspiciously small (${SIZE} bytes)"
+[ "$SIZE" -gt 1024 ] || fail "tailwind.css suspiciously small (${SIZE} bytes)"
 
 # Pico must not leak (reference Phase 01 stylesheet)
 if find "$DIST" -name '*.css' -print0 | xargs -0 grep -l 'pico' 2>/dev/null | grep -q .; then
