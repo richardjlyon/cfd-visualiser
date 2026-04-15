@@ -1,0 +1,8 @@
+{
+  "CfD": "Contract for Difference — a government scheme that guarantees renewable generators a fixed price per MWh.",
+  "Strike price": "The guaranteed £/MWh a generator is paid under its CfD.",
+  "Reference price": "The market price the CfD is measured against.",
+  "IMRP": "Intermittent Market Reference Price — the wholesale benchmark used for wind and solar.",
+  "Allocation round": "A government auction round in which CfDs were awarded.",
+  "Investment Contract": "Pre-AR1 legacy scheme (2014) — CfDs awarded before the formal allocation rounds began. Shown under the raw label in v1; a clearer public-facing label is deferred to Phase 2 (resolves RESEARCH Open Q7)."
+}

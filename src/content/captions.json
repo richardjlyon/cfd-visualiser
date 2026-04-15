@@ -1,0 +1,8 @@
+{
+  "chart-3c": {
+    "caption": "CfD strike prices have tracked above wholesale prices in every year except 2022 — consumers paid the gap.",
+    "source_name": "LCCC Actual CfD Generation and Avoided GHG Emissions",
+    "source_url": "https://dp.lowcarboncontracts.uk/dataset/actual-cfd-generation-and-avoided-ghg-emissions",
+    "boxout": "The strike price is what generators are guaranteed per unit of electricity. The market reference price is the going wholesale rate. Consumers pay the difference through their bills — that gap is the subsidy."
+  }
+}
