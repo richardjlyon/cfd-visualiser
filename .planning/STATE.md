@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 1 UI-SPEC approved
-last_updated: "2026-04-15T07:14:21.684Z"
-last_activity: 2026-04-15 -- Phase 01 execution started
+stopped_at: Phase 01.1 UI-SPEC approved
+last_updated: "2026-04-15T12:12:42.633Z"
+last_activity: 2026-04-15 -- Phase 01.1 execution started
 progress:
-  total_phases: 2
-  completed_phases: 0
-  total_plans: 5
-  completed_plans: 0
-  percent: 0
+  total_phases: 3
+  completed_phases: 1
+  total_plans: 14
+  completed_plans: 5
+  percent: 36
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-14)
 
 **Core value:** A non-specialist can land on the site, look at a single chart, and walk away with an accurate, sourced understanding of what UK CfDs actually cost and deliver.
-**Current focus:** Phase 01 — pipeline-first-chart
+**Current focus:** Phase 01.1 — shock-counter-chart-image-export-and-glossary-tooltip-js
 
 ## Current Position
 
-Phase: 01 (pipeline-first-chart) — EXECUTING
-Plan: 1 of 5
-Status: Executing Phase 01
-Last activity: 2026-04-15 -- Phase 01 execution started
+Phase: 01.1 (shock-counter-chart-image-export-and-glossary-tooltip-js) — EXECUTING
+Plan: 1 of 9
+Status: Executing Phase 01.1
+Last activity: 2026-04-15 -- Phase 01.1 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -64,6 +64,10 @@ Recent decisions affecting current work:
 - Stack: Polars + DuckDB for ingest/store; Observable Plot 0.6.17 for charts; Pico CSS 2.x for design; Cloudflare Pages for hosting
 - Roadmap: Two phases for v1 — Phase 1 ships the pipeline + CHART-01 end-to-end; Phase 2 adds methodology gate + remaining three charts
 
+### Roadmap Evolution
+
+- Phase 01.1 inserted after Phase 1: Shock counter, chart image export, and glossary tooltip JS (URGENT — absorbed from docs/web-design-notes.md via Phase 1 UI-SPEC update)
+
 ### Pending Todos
 
 None yet.
@@ -84,6 +88,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-04-15T00:28:28.934Z
-Stopped at: Phase 1 UI-SPEC approved
-Resume file: .planning/phases/01-pipeline-first-chart/01-UI-SPEC.md
+Last session: 2026-04-15T10:56:19.218Z
+Stopped at: Phase 01.1 UI-SPEC approved
+Resume file: .planning/phases/01.1-shock-counter-chart-image-export-and-glossary-tooltip-js/01.1-UI-SPEC.md

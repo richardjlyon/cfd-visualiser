@@ -37,6 +37,24 @@ Plans:
 - [x] 01-04-chart-builder-and-page-PLAN.md — CHART-01 view-model builder, meta artefact, scissors.md page, JSON download
 - [ ] 01-05-ci-deploy-keepalive-PLAN.md — CI + daily cron workflows, Cloudflare Pages deploy, keepalive, OG card, analytics
 
+### Phase 01.1: Shock counter, chart image export, and glossary tooltip JS (INSERTED)
+
+**Goal:** A redesigned dark-themed dashboard ships at the live URL with a hero "shock counter" (build-time YTD subsidy + JS count-up at a pre-baked £/sec rate), a 4-card landing grid linking to detail pages for all 4 v1 charts (CHART-01 fully wired with dark-themed Plot; CHART-02/03/04 as placeholder-bodied detail pages with full editorial scaffolding), per-chart downloadable PNG, and vanilla-JS glossary tooltips on every editorial page — all under Tailwind v4 (Pico ripped out).
+**Requirements**: CHART-01, CHART-02, CHART-03, CHART-04, EDIT-01, EDIT-02, EDIT-04, EDIT-05, OPS-01, OPS-02, OPS-03, plus phase-local pseudo-IDs REQ-SHOCK-01..03 (ytd_subsidy_gbp, gbp_per_sec_rate clamped, ytd_as_of=data-date), REQ-GLOSS-01..05 (slug schema migration, intermittent+dispatchable, vanilla-JS tooltip, XSS guard, refs-defined check), REQ-PNG-01..03 (dark 1200×630, 4 PNGs per build, schema-drift retention), REQ-DESIGN-01..08 (dark theme, Tailwind, card grid, file-routing, placeholder bodies), REQ-VERIFY-01 (post-build smoke).
+**Depends on:** Phase 1
+**Plans:** 9 plans
+
+Plans:
+- [ ] 01.1-01-PLAN.md — Wave 0 test scaffolding + Pillow + bash smoke skeleton (RED state for all downstream tasks)
+- [ ] 01.1-02-PLAN.md — Tailwind v4 standalone CLI integration; observablehq.config.js update; Pico removed
+- [ ] 01.1-03-PLAN.md — build_meta.py extension: ytd_subsidy_gbp, gbp_per_sec_rate (clawback-clamped), ytd_as_of, ytd_label_year; schema 1.1
+- [ ] 01.1-04-PLAN.md — glossary.json slug-key migration + intermittent/dispatchable; captions.json card_hook fields; EDIT-05 lint extension
+- [ ] 01.1-05-PLAN.md — pipeline/export_chart_images.py (dark matplotlib renderer) + wire into __main__.py with EXIT_IMAGE_EXPORT_FAILED
+- [ ] 01.1-06-PLAN.md — src/client/shock-counter.js (rAF + reduce-motion) and src/client/glossary-tooltip.js (XSS-safe textContent rendering)
+- [ ] 01.1-07-PLAN.md — src/index.md landing rewrite (hero + 4-card grid + footer); src/charts/scissors.md re-skin (dark Plot, Download Image, abbr terms)
+- [ ] 01.1-08-PLAN.md — 3 placeholder detail pages (co2-avoided, cumulative-subsidy, generation-heatmap) with full editorial scaffolding + placeholder PNG download
+- [ ] 01.1-09-PLAN.md — Wave 4 verification: clean full-build + full pytest/node/smoke suite + checkpoint:human-verify (visual UX confirmation)
+
 ### Phase 2: Methodology + Remaining Charts
 **Goal**: The methodology page is live (gating CHART-02), and all four v1 charts are public — giving visitors the complete editorial picture of CfD cost, carbon efficiency, subsidy concentration, and intermittency
 **Depends on**: Phase 1
