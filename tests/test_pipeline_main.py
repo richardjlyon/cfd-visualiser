@@ -134,6 +134,96 @@ def test_healthcheck_ping_issued(tmp_path: Path, mock_lccc_response: bytes) -> N
     assert hc_calls[0] == hc_url
 
 
+# ── Phase 01.1 shock-counter / image-export additions (Wave 0 RED) ──────────
+
+
+def test_png_exported_on_happy_path(
+    tmp_path: Path, mock_lccc_response: bytes, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Happy path pipeline run exports all 4 chart PNGs into src/assets/charts/.
+
+    Wave 0 RED: pipeline/__main__.py does not yet invoke the image export step.
+    Plan 05 wires it in; this test flips GREEN when that happens.
+
+    Uses monkeypatch + a redirected asset dir so the test never writes into
+    the real source tree.
+    """
+    from pipeline.__main__ import run
+
+    asset_dir = tmp_path / "assets" / "charts"
+    asset_dir.mkdir(parents=True, exist_ok=True)
+
+    # Plan 05 will read this env var (or accept a param) to redirect output.
+    monkeypatch.setenv("PIPELINE_CHART_ASSETS_DIR", str(asset_dir))
+
+    client = _make_mock_client_for(mock_lccc_response)
+    ret = run(
+        latest_csv=tmp_path / "latest.csv",
+        raw_dir=tmp_path / "raw",
+        db_path=tmp_path / "cfd.duckdb",
+        client=client,
+    )
+    assert ret == 0, f"pipeline run returned non-zero: {ret}"
+
+    for name in (
+        "chart-3c.png",
+        "chart-co2-avoided-placeholder.png",
+        "chart-cumulative-subsidy-placeholder.png",
+        "chart-heatmap-placeholder.png",
+    ):
+        p = asset_dir / name
+        assert p.exists(), f"expected PNG {name} not produced by pipeline run"
+
+
+def test_schema_drift_skips_png_export(
+    tmp_path: Path, mock_lccc_response: bytes, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """On schema drift, existing PNGs MUST be preserved byte-for-byte (fail-safe).
+
+    Mitigates DoS threat T-01.1-04: a schema-drift exit must NOT wipe the
+    previously-deployed PNG fallbacks. OPS-02 "leave previous deployment
+    intact" extended to image assets.
+    """
+    from pipeline.__main__ import run, EXIT_SCHEMA_DRIFT
+
+    asset_dir = tmp_path / "assets" / "charts"
+    asset_dir.mkdir(parents=True, exist_ok=True)
+
+    # Pre-seed all 4 PNGs with a known sentinel byte-pattern.
+    sentinel = b"\x89PNG\r\n\x1a\nSENTINEL-PRESERVED"
+    png_paths: list[Path] = []
+    for name in (
+        "chart-3c.png",
+        "chart-co2-avoided-placeholder.png",
+        "chart-cumulative-subsidy-placeholder.png",
+        "chart-heatmap-placeholder.png",
+    ):
+        p = asset_dir / name
+        p.write_bytes(sentinel)
+        png_paths.append(p)
+
+    monkeypatch.setenv("PIPELINE_CHART_ASSETS_DIR", str(asset_dir))
+
+    bad_body = _csv_with_extra_column(mock_lccc_response)
+    client = _make_mock_client_for(bad_body)
+
+    ret = run(
+        latest_csv=tmp_path / "latest.csv",
+        raw_dir=tmp_path / "raw",
+        db_path=tmp_path / "cfd.duckdb",
+        client=client,
+    )
+    assert ret == EXIT_SCHEMA_DRIFT, f"expected EXIT_SCHEMA_DRIFT, got {ret}"
+
+    # All pre-seeded PNGs MUST survive byte-for-byte.
+    for p in png_paths:
+        assert p.exists(), f"preserved PNG vanished under schema drift: {p.name}"
+        assert p.read_bytes() == sentinel, (
+            f"PNG {p.name} was overwritten during a failed run — "
+            f"fail-safe retention broken"
+        )
+
+
 def test_healthcheck_skipped_when_unset(
     tmp_path: Path, mock_lccc_response: bytes, monkeypatch: pytest.MonkeyPatch
 ) -> None:

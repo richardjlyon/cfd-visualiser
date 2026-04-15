@@ -50,9 +50,11 @@ def meta_output(seeded_db: Path, tmp_path: Path) -> dict:
 # ── tests ─────────────────────────────────────────────────────────────────────
 
 def test_meta_keys_present(meta_output: dict) -> None:
-    """All 6 required keys are present in the meta output."""
+    """All required keys (6 original + 4 shock-counter) are present in the meta output."""
     required = {"last_updated", "row_count", "max_settlement_date",
-                "pipeline_version", "schema_version", "captions"}
+                "pipeline_version", "schema_version", "captions",
+                "ytd_subsidy_gbp", "ytd_as_of", "gbp_per_sec_rate",
+                "ytd_label_year"}
     assert required == set(meta_output.keys()), (
         f"Key mismatch. Got: {set(meta_output.keys())}"
     )
@@ -95,8 +97,99 @@ def test_max_settlement_date_format(meta_output: dict) -> None:
 
 
 def test_schema_version_literal(meta_output: dict) -> None:
-    """schema_version is exactly the string '1.0'."""
-    assert meta_output["schema_version"] == "1.0"
+    """schema_version is exactly the string '1.1' (bumped in Phase 01.1)."""
+    assert meta_output["schema_version"] == "1.1"
+
+
+# ── Phase 01.1 shock-counter additions (Wave 0 RED) ───────────────────────────
+
+def test_emits_ytd_subsidy(meta_output: dict) -> None:
+    """ytd_subsidy_gbp is a float >= 0 (clamped at zero)."""
+    val = meta_output["ytd_subsidy_gbp"]
+    assert isinstance(val, (int, float)), f"ytd_subsidy_gbp must be numeric, got {type(val)}"
+    assert float(val) >= 0.0, f"ytd_subsidy_gbp must be >= 0, got {val}"
+
+
+def test_rate_clamped_non_negative(tmp_path: Path, sample_csv_path: Path) -> None:
+    """gbp_per_sec_rate must be >= 0 even when a clawback month dominates
+    the rolling-30-day mean.
+
+    Fixture construction: seed the DuckDB from the standard sample CSV, then
+    INSERT a synthetic row with a heavily negative CFD_Payments_GBP dated at
+    the current max_settlement_date. The rolling-mean computation must clamp
+    the £/sec rate at 0 rather than emit a negative value (which would make
+    the client counter tick downward — a UX and editorial failure).
+    """
+    import duckdb  # noqa: PLC0415
+    from pipeline.build_meta import build  # noqa: PLC0415
+
+    db_path = _seed_db(tmp_path, sample_csv_path)
+    con = duckdb.connect(str(db_path))
+    try:
+        max_date = con.execute(
+            "SELECT CAST(MAX(Settlement_Date) AS VARCHAR) FROM raw_generation"
+        ).fetchone()[0]
+        # Inspect schema to build a conservative INSERT. Use a synthetic
+        # clawback row that dominates the 30-day window.
+        cols = [r[0] for r in con.execute("DESCRIBE raw_generation").fetchall()]
+        # Build a row with negative CFD_Payments_GBP; all other numeric cols 0.
+        vals = []
+        for c in cols:
+            if c == "Settlement_Date":
+                vals.append(f"DATE '{max_date}'")
+            elif c == "CFD_Payments_GBP":
+                vals.append("-1000000000.0")
+            elif c.lower().endswith("_gbp") or c.lower().endswith("_mwh") or c.lower().endswith("_tco2"):
+                vals.append("0.0")
+            else:
+                vals.append("NULL")
+        con.execute(
+            f"INSERT INTO raw_generation ({', '.join(cols)}) VALUES ({', '.join(vals)})"
+        )
+    finally:
+        con.close()
+
+    out = tmp_path / "meta.json"
+    meta = build(
+        db_path,
+        CAPTIONS_PATH,
+        out,
+        pipeline_version="test",
+        now_iso="2026-04-15T06:30:00Z",
+    )
+    assert float(meta["gbp_per_sec_rate"]) >= 0.0, (
+        f"gbp_per_sec_rate must be clamped at >= 0, got {meta['gbp_per_sec_rate']}"
+    )
+
+
+def test_ytd_as_of_is_data_date(meta_output: dict) -> None:
+    """ytd_as_of MUST equal max_settlement_date (data time), NOT last_updated (build time).
+
+    STRIDE-T mitigation: prevents the shock counter from lying by substituting
+    build wall-clock time for the most recent data observation.
+    """
+    assert meta_output["ytd_as_of"] == meta_output["max_settlement_date"], (
+        f"ytd_as_of ({meta_output['ytd_as_of']}) must equal "
+        f"max_settlement_date ({meta_output['max_settlement_date']})"
+    )
+
+
+def test_ytd_as_of_not_in_future(meta_output: dict) -> None:
+    """ytd_as_of must not be after today (ISO-8601 string compare)."""
+    import datetime as _dt  # noqa: PLC0415
+    today = _dt.date.today().isoformat()
+    assert meta_output["ytd_as_of"] <= today, (
+        f"ytd_as_of {meta_output['ytd_as_of']} is in the future (today={today})"
+    )
+
+
+def test_ytd_year_from_data(meta_output: dict) -> None:
+    """ytd_label_year is the year component of ytd_as_of."""
+    as_of = meta_output["ytd_as_of"]
+    expected_year = int(as_of[:4])
+    assert meta_output["ytd_label_year"] == expected_year, (
+        f"ytd_label_year {meta_output['ytd_label_year']} != year({as_of})={expected_year}"
+    )
 
 
 def test_captions_deep_copy(meta_output: dict) -> None:

@@ -70,3 +70,24 @@ def test_boxout_not_linted():
     result = lint_captions_file(FIXTURES / "captions_valid.json")
     # Confirm that test-a (which has "waste" in boxout) does NOT appear as violation
     assert "test-a" not in result
+
+
+# ── Phase 01.1 Wave 0 RED: card-hook editorial grammar ────────────────────────
+
+def test_card_hooks_factual():
+    """Landing-page card hooks for the 3 placeholder charts must lint clean.
+
+    RED now: captions.json has no chart-co2-avoided / chart-cumulative-subsidy /
+    chart-heatmap entries, and no 'card_hook' field. Plan 04 adds them; this
+    test flips GREEN when factual copy lands.
+    """
+    import json  # noqa: PLC0415
+    caps = json.loads(Path("src/content/captions.json").read_text())
+    for key in ("chart-co2-avoided", "chart-cumulative-subsidy", "chart-heatmap"):
+        assert key in caps, f"captions.json missing key {key!r}"
+        hook = caps[key].get("card_hook")
+        assert hook, f"captions.json[{key!r}].card_hook missing or empty"
+        violations = lint_caption(hook)
+        assert violations == [], (
+            f"{key} card_hook violates EDIT-05: {violations}"
+        )
