@@ -1,0 +1,70 @@
+name: daily-rebuild
+on:
+  schedule:
+    - cron: '30 6 * * *'   # 06:30 UTC — see docs/OPS.md for rationale
+  workflow_dispatch:
+
+permissions:
+  contents: write        # commit data artefacts
+  deployments: write     # cloudflare/pages-action
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      PIPELINE_HC_URL: ${{ secrets.PIPELINE_HC_URL }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history so the daily commit isn't shallow
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - run: uv sync --frozen
+      - run: npm ci
+
+      - name: Run pipeline (fetch -> validate -> store -> chart -> meta -> og)
+        run: uv run python -m pipeline
+
+      - name: Framework build
+        run: npx @observablehq/framework build
+
+      - name: Inject Cloudflare Web Analytics token
+        env:
+          CF_WA_TOKEN: ${{ secrets.CF_WEB_ANALYTICS_TOKEN }}
+        run: |
+          if [ -n "$CF_WA_TOKEN" ]; then
+            find dist -name '*.html' -exec \
+              sed -i "s|__CF_WEB_ANALYTICS_TOKEN__|$CF_WA_TOKEN|g" {} +
+          fi
+
+      - name: Commit data artefacts
+        run: |
+          git config user.name "cfd-bot"
+          git config user.email "cfd-bot@users.noreply.github.com"
+          git add data/cfd.duckdb data/raw/ src/data/ src/assets/og-card.png || true
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(data): daily rebuild $(date -u +%F)"
+            git push
+          fi
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          projectName: cfd-visualiser
+          directory: dist
+          branch: main
+
+      # Note: Healthchecks ping happens inside `python -m pipeline` when
+      # PIPELINE_HC_URL is set; no separate curl step needed. If the
+      # pipeline exited non-zero earlier, we never reach this point and
+      # HC notices the missed ping.
