@@ -139,6 +139,8 @@ def test_rate_clamped_non_negative(tmp_path: Path, sample_csv_path: Path) -> Non
                 vals.append(f"DATE '{max_date}'")
             elif c == "CFD_Payments_GBP":
                 vals.append("-1000000000.0")
+            elif c == "CfD_ID":
+                vals.append("'SYNTH-CLAWBACK'")
             elif c.lower().endswith("_gbp") or c.lower().endswith("_mwh") or c.lower().endswith("_tco2"):
                 vals.append("0.0")
             else:
