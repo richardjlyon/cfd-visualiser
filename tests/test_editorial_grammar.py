@@ -70,3 +70,14 @@ def test_boxout_not_linted():
     result = lint_captions_file(FIXTURES / "captions_valid.json")
     # Confirm that test-a (which has "waste" in boxout) does NOT appear as violation
     assert "test-a" not in result
+
+
+def test_card_hooks_factual():
+    import json
+    caps = json.loads(Path("src/content/captions.json").read_text())
+    for key in ("chart-co2-avoided", "chart-cumulative-subsidy", "chart-heatmap"):
+        assert key in caps, f"captions.json missing key {key}"
+        hook = caps[key].get("card_hook")
+        assert hook, f"captions.json[{key}].card_hook missing or empty"
+        violations = lint_caption(hook)
+        assert violations == [], f"{key} card_hook violates EDIT-05: {violations}"
