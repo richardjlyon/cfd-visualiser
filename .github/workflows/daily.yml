@@ -43,7 +43,21 @@ jobs:
           if [ -n "$CF_WA_TOKEN" ]; then
             find dist -name '*.html' -exec \
               sed -i "s|__CF_WEB_ANALYTICS_TOKEN__|$CF_WA_TOKEN|g" {} +
+          else
+            # No analytics token — strip the beacon script line entirely so
+            # the literal placeholder doesn't ship to production.
+            find dist -name '*.html' -exec \
+              sed -i '/static\.cloudflareinsights\.com\/beacon\.min\.js/d' {} +
           fi
+
+      - name: Copy unhashed assets referenced by HTML head meta tags
+        run: |
+          # The og:image meta tag references /assets/og-card.png at a stable
+          # path. Framework hashes assets under _file/ for cache-busting, but
+          # social crawlers and the meta tag use the unhashed path — copy it
+          # verbatim into dist/.
+          mkdir -p dist/assets
+          cp src/assets/og-card.png dist/assets/og-card.png
 
       - name: Commit data artefacts
         run: |
