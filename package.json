@@ -1,0 +1,16 @@
+{
+  "name": "cfd-visualiser",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "observable build",
+    "dev": "observable preview",
+    "clean": "observable clean"
+  },
+  "dependencies": {
+    "@observablehq/framework": "1.13.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
