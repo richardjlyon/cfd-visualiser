@@ -1,0 +1,60 @@
+:root {
+  /* Okabe-Ito colourblind-safe palette (UI-SPEC Color section) */
+  --okabe-blue:       #0072B2; /* accent, strike price line, links */
+  --okabe-orange:     #E69F00; /* market reference price line */
+  --okabe-vermillion: #D55E00; /* positive subsidy fill */
+  --okabe-green:      #009E73; /* clawback fill (2022) */
+
+  /* Layout tokens */
+  --content-measure: 720px;
+  --tap-target: 44px;
+
+  /* Spacing scale (8-point) */
+  --space-xs:   4px;
+  --space-sm:   8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+}
+
+main, article {
+  max-width: var(--content-measure);
+  margin-inline: auto;
+  padding-inline: var(--space-md);
+}
+
+/* Minimum tap target enforcement (OPS-03 / WCAG 2.5.5) */
+button, a.download, a.toggle {
+  min-height: var(--tap-target);
+  min-width: var(--tap-target);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm) var(--space-md);
+}
+
+figure.chart {
+  margin-block: var(--space-xl);
+}
+
+aside.boxout {
+  background: var(--pico-muted-bg);
+  padding: var(--space-lg);
+  margin-block: var(--space-lg);
+  border-radius: 8px;
+}
+
+p.caption {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--pico-color);
+  margin-block: var(--space-md);
+}
+
+.source-line {
+  font-style: italic;
+  font-size: 0.875rem;
+  color: var(--pico-muted-color);
+}
