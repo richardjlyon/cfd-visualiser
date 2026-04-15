@@ -6,7 +6,7 @@ on:
 
 permissions:
   contents: write        # commit data artefacts
-  deployments: write     # cloudflare/pages-action
+  deployments: write     # cloudflare deploy
 
 jobs:
   build-and-deploy:
@@ -55,14 +55,12 @@ jobs:
             git push
           fi
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+      - name: Deploy to Cloudflare Workers (static assets)
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          projectName: cfd-visualiser
-          directory: dist
-          branch: main
+          command: deploy
 
       # Note: Healthchecks ping happens inside `python -m pipeline` when
       # PIPELINE_HC_URL is set; no separate curl step needed. If the
