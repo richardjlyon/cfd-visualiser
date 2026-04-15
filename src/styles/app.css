@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+/* Tailwind v4 in-CSS theme — mirrors tailwind.config.js for v4-native consumption */
+@theme {
+  --color-dashboard: #0d1117;
+  --color-card:      #161b22;
+  --color-surface:   #30363d;
+  --color-accent:    #58a6ff;
+  --color-primary:   #e6edf3;
+  --color-muted:     #8b949e;
+  --color-grid:      #21262d;
+  --color-on-accent: #0d1117;
+
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Apply baseline dark theme to root */
+html { background-color: var(--color-dashboard); color: var(--color-primary); }
+body { font-family: var(--font-display); font-feature-settings: "tnum"; }
+
+/* Pitfall 1 mitigation (RESEARCH §Common Pitfalls): Tailwind preflight zeroes
+   Markdown defaults. Restore prose rhythm so Framework Markdown pages render
+   with paragraph spacing, headings, and list bullets. */
+.prose p   { margin-block: 1rem; line-height: 1.5; }
+.prose h1  { font-size: 28px; font-weight: 600; line-height: 1.2; margin-block: 1.5rem 1rem; }
+.prose h2  { font-size: 20px; font-weight: 600; line-height: 1.3; margin-block: 1.5rem 0.75rem; }
+.prose h3  { font-size: 18px; font-weight: 600; line-height: 1.3; margin-block: 1.25rem 0.5rem; }
+.prose ul  { list-style: disc; padding-inline-start: 1.5rem; margin-block: 1rem; }
+.prose ol  { list-style: decimal; padding-inline-start: 1.5rem; margin-block: 1rem; }
+.prose li  { margin-block: 0.25rem; }
+.prose a   { color: var(--color-accent); text-decoration: underline; }
+.prose a:hover { text-decoration: none; }
+.prose strong { font-weight: 600; }
+.prose em  { font-style: italic; }
+
+/* Glossary affordance (UI-SPEC §Glossary Tooltip Component) */
+abbr[data-glossary] {
+  text-decoration: underline dotted;
+  text-decoration-color: var(--color-muted);
+  text-underline-offset: 2px;
+  cursor: help;
+}
+abbr[data-glossary]:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Shock counter typography (UI-SPEC §Typography — fluid additional rule) */
+.text-shock {
+  font-size: clamp(48px, 8vw, 80px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+/* Card hover affordance (UI-SPEC §Card Grid) */
+a.card { display: block; transition: border-color 150ms; }
+a.card:hover, a.card:focus-visible { border-color: var(--color-accent); }
+a.card:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Chart figure baseline */
+figure.chart {
+  background-color: var(--color-dashboard);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
