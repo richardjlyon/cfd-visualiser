@@ -6,6 +6,7 @@ export default {
     { name: "Scissors", path: "/charts/scissors" }
   ],
   head: `
+<script>document.documentElement.setAttribute('data-theme','light')</script>
 <link rel="stylesheet" href="/assets/pico.min.css">
 <link rel="stylesheet" href="/assets/custom.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">

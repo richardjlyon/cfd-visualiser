@@ -1,3 +1,13 @@
+/* Lock Pico CSS and the page to light mode regardless of OS preference.
+   Without this, dark-mode users get white text on Framework's white
+   background because Pico auto-flips its --pico-color to white. */
+:root {
+  color-scheme: light;
+}
+html {
+  color-scheme: light;
+}
+
 :root {
   /* Okabe-Ito colourblind-safe palette (UI-SPEC Color section) */
   --okabe-blue:       #0072B2; /* accent, strike price line, links */
@@ -57,4 +67,28 @@ p.caption {
   font-style: italic;
   font-size: 0.875rem;
   color: var(--pico-muted-color);
+}
+
+/* Dark-mode override: Pico flips its variables under prefers-color-scheme:
+   dark, but Framework's "air" theme keeps the page background white — so
+   Pico's white text becomes invisible. Pin colours to the light palette. */
+@media (prefers-color-scheme: dark) {
+  :root,
+  :host,
+  html {
+    --pico-background-color: #fff;
+    --pico-color: #1b1f23;
+    --pico-h1-color: #1b1f23;
+    --pico-h2-color: #1b1f23;
+    --pico-h3-color: #1b1f23;
+    --pico-h4-color: #1b1f23;
+    --pico-h5-color: #1b1f23;
+    --pico-h6-color: #1b1f23;
+    --pico-muted-color: #5e6772;
+    --pico-muted-border-color: #e1e4e8;
+  }
+  body, h1, h2, h3, h4, h5, h6, p {
+    color: #1b1f23;
+  }
+  p.caption { color: #1b1f23; }
 }

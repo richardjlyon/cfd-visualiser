@@ -14,3 +14,4 @@ data/cfd.duckdb
 data/cfd.duckdb.wal
 # Intermediate uncompressed fetches (archives stay under data/raw/*.csv.gz)
 data/latest.csv
+.DS_Store
