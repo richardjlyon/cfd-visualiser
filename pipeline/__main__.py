@@ -1,4 +1,4 @@
-"""CLI entry: fetch -> validate -> store -> build_chart_3c -> build_meta -> healthcheck.
+"""CLI entry: fetch -> validate -> store -> build_chart_3c -> build_meta -> og_image -> healthcheck.
 
 Exit codes:
 - 0  OK
@@ -7,6 +7,7 @@ Exit codes:
 - 3  store failed (DuckDB write error)
 - 4  healthcheck ping failed (store completed successfully)
 - 5  chart/meta build failed
+- 7  og-image build failed (best-effort; store + chart already succeeded)
 
 Environment variables:
 - PIPELINE_HC_URL (optional): Healthchecks.io ping URL; silent skip if unset.
@@ -28,6 +29,7 @@ from pipeline.validate import read_and_validate
 from pipeline.store import upsert
 from pipeline.build_chart_3c import build as build_chart_3c
 from pipeline.build_meta import build as build_meta
+from pipeline.build_og_image import build as build_og
 
 EXIT_OK = 0
 EXIT_FETCH_FAILED = 1
@@ -35,6 +37,7 @@ EXIT_SCHEMA_DRIFT = 2
 EXIT_STORE_FAILED = 3
 EXIT_HEALTHCHECK_FAILED = 4
 EXIT_CHART_BUILD_FAILED = 5
+EXIT_OG_FAILED = 7
 
 
 def run(
@@ -95,7 +98,15 @@ def run(
         print(f"ERROR: chart/meta build failed: {e}", file=sys.stderr)
         return EXIT_CHART_BUILD_FAILED
 
-    # Step 5: Healthcheck ping (optional)
+    # Step 5: Build OG card (best-effort — does not block healthcheck)
+    try:
+        build_og(Path("src/data/chart-3c.json"), Path("src/assets/og-card.png"))
+        print("ok: og-card.png built")
+    except Exception as e:
+        print(f"WARN: og-card build failed: {e}", file=sys.stderr)
+        return EXIT_OG_FAILED
+
+    # Step 6: Healthcheck ping (optional)
     if hc_url:
         try:
             # Re-use injected client for tests; fall back to a simple one-shot GET
