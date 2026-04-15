@@ -4,7 +4,7 @@ export default {
   theme: "near-midnight",
   sidebar: false,
   toc: false,
-  header: `<header class="topnav">
+  header: `<header class="topnav"><div class="topnav-inner">
   <a href="/" class="brand"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" fill="currentColor" stroke="none"/></svg> SubsidyDashboard</a>
   <nav>
     <a href="/" class="active"><span class="dot"></span> Live</a>
@@ -17,6 +17,7 @@ export default {
     <a href="https://github.com/" class="more">More <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg></a>
     <button class="theme-toggle" aria-label="Theme toggle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></button>
   </div>
+</div>
 </header>`,
   pager: false,
   pages: [
@@ -29,7 +30,7 @@ export default {
   head: `
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap">
 <link rel="stylesheet" href="/assets/tailwind.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="UK Contracts for Difference: what consumers pay vs the market. Daily-rebuilt from LCCC data.">

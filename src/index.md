@@ -28,6 +28,17 @@ display(html`<section class="page-container">
     </div>
   </div>
   <p class="hero-lead">Real-time renewable energy subsidy data for Great Britain, rebuilt daily from the Low Carbon Contracts Company dataset. Compare what consumers pay against the wholesale market, follow the £-per-tCO₂ avoided, and see who collects the largest share of the subsidy across multiple charts.</p>
+
+  <div class="ticker">
+    <span class="ticker-label">Live ticker · CfD subsidy paid since 1 Jan ${meta.ytd_label_year}</span>
+    <span class="ticker-value"
+          id="shock-numeral"
+          data-ytd="${meta.ytd_subsidy_gbp}"
+          data-rate="${meta.gbp_per_sec_rate}"
+          aria-live="off">£${(meta.ytd_subsidy_gbp / 1e9).toFixed(2)}b</span>
+    <span class="ticker-meta">As of ${meta.ytd_as_of} · £${meta.gbp_per_sec_rate.toFixed(0)}/sec</span>
+    <a class="ticker-link" href="./charts/generation-heatmap">Generation heatmap →</a>
+  </div>
 </section>`);
 ```
 
@@ -148,17 +159,6 @@ display(html`<section class="page-container" style="padding-top:0">
       <a class="chart-card-cta" href="./charts/co2-avoided">Open £/tCO₂ chart →</a>
     </article>
 
-  </div>
-
-  <div class="ticker">
-    <span class="ticker-label">Live ticker · CfD subsidy paid since 1 Jan ${meta.ytd_label_year}</span>
-    <span class="ticker-value text-accent"
-          id="shock-numeral"
-          data-ytd="${meta.ytd_subsidy_gbp}"
-          data-rate="${meta.gbp_per_sec_rate}"
-          aria-live="off">£${(meta.ytd_subsidy_gbp / 1e9).toFixed(2)}b</span>
-    <span class="ticker-meta">As of ${meta.ytd_as_of} · £${meta.gbp_per_sec_rate.toFixed(0)}/sec</span>
-    <a class="ticker-link" href="./charts/generation-heatmap">Generation heatmap →</a>
   </div>
 </section>`);
 ```
