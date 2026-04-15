@@ -2,14 +2,17 @@
 
 /* Tailwind v4 in-CSS theme — mirrors tailwind.config.js for v4-native consumption */
 @theme {
-  --color-dashboard: #0d1117;
-  --color-card:      #161b22;
-  --color-surface:   #30363d;
-  --color-accent:    #58a6ff;
-  --color-primary:   #e6edf3;
-  --color-muted:     #8b949e;
+  /* Palette extracted from reference (energydashboard.co.uk) computed styles */
+  --color-dashboard: #030712;                     /* body bg (slate-950) */
+  --color-card:      #1c202a;                     /* panel bg (neutral) */
+  --color-nav:       #10141e;                     /* topnav bg */
+  --color-surface:   rgba(203, 213, 225, 0.10);   /* faint panel border */
+  --color-divider:   rgba(203, 213, 225, 0.40);   /* card-header underline */
+  --color-accent:    #38bdf8;                     /* sky-400 brand */
+  --color-primary:   #cbd5e1;                     /* slate-300 base text */
+  --color-muted:     #94a3b8;                     /* slate-400 secondary */
   --color-grid:      #21262d;
-  --color-on-accent: #0d1117;
+  --color-on-accent: #030712;
 
   --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
@@ -84,246 +87,233 @@ a.cfd-card:focus-visible {
 #observablehq-header { padding: 0 !important; margin: 0 !important; }
 #observablehq-center { padding: 0 !important; }
 
-/* Top navbar (reference: energydashboard.co.uk) */
+/* ── Topnav (mirrors reference: 65px, bg #10141e, brand padding 12px 16px) ── */
 .topnav {
-  background-color: var(--color-card);
-  border-bottom: 1px solid var(--color-surface);
-  padding: 0.65rem 1.5rem;
+  background-color: var(--color-nav);
+  height: 65px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 8px;
 }
 .topnav .brand {
   color: var(--color-accent);
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 16px;
   text-decoration: none;
+  padding: 12px 16px;
+  border-radius: 8px;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 12px;
 }
-.topnav .brand svg { color: #fbbf24; }
-.topnav nav { display: flex; gap: 1.25rem; flex: 1; justify-content: center; }
+.topnav .brand:hover { background: rgba(56,189,248,0.06); }
+.topnav nav { display: flex; gap: 4px; flex: 1; }
 .topnav nav a {
-  color: var(--color-muted);
+  color: var(--color-primary);
   text-decoration: none;
-  font-size: 0.92rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 12px 14px;
+  border-radius: 8px;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 8px;
 }
-.topnav nav a:hover { color: var(--color-primary); }
+.topnav nav a:hover { background: rgba(255,255,255,0.04); }
 .topnav nav a.active { color: var(--color-accent); }
 .topnav nav a .dot {
   display: inline-block;
   width: 8px; height: 8px;
   border-radius: 50%;
   background: var(--color-accent);
-  box-shadow: 0 0 0 0 rgba(88,166,255,0.6);
+  box-shadow: 0 0 0 0 rgba(56,189,248,0.6);
   animation: pulse 2s infinite;
 }
 @keyframes pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(88,166,255,0.6); }
-  70%  { box-shadow: 0 0 0 6px rgba(88,166,255,0); }
-  100% { box-shadow: 0 0 0 0 rgba(88,166,255,0); }
+  0%   { box-shadow: 0 0 0 0 rgba(56,189,248,0.6); }
+  70%  { box-shadow: 0 0 0 6px rgba(56,189,248,0); }
+  100% { box-shadow: 0 0 0 0 rgba(56,189,248,0); }
 }
-.topnav-right { display: flex; align-items: center; gap: 0.75rem; }
-.topnav-right .more {
-  color: var(--color-muted);
-  text-decoration: none;
-  font-size: 0.92rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-.topnav-right .more:hover { color: var(--color-primary); }
+.topnav-right { display: flex; align-items: center; gap: 4px; }
+.topnav-right .more,
 .topnav-right .theme-toggle {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-size: 16px;
+  padding: 12px 14px;
+  border-radius: 8px;
   background: transparent;
   border: 0;
-  color: var(--color-muted);
   cursor: pointer;
-  padding: 0.25rem;
-  border-radius: 4px;
-}
-.topnav-right .theme-toggle:hover { color: var(--color-primary); background: rgba(255,255,255,0.04); }
-
-/* Hero — match reference: small blue heading with left bar accent */
-.hero {
-  background-color: var(--color-card);
-  border-bottom: 1px solid var(--color-surface);
-  padding: 1.25rem 1.5rem;
-}
-.hero-row {
-  max-width: 80rem;
-  margin: 0 auto;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-}
-.hero-text { flex: 1; min-width: 280px; }
-.hero-title {
   display: inline-flex;
   align-items: center;
-  font-size: 1.15rem;
-  font-weight: 600;
+  gap: 6px;
+}
+.topnav-right .more:hover,
+.topnav-right .theme-toggle:hover { background: rgba(255,255,255,0.04); }
+
+/* ── Page container — matches reference ".container mx-auto p-3 pb-6" ── */
+.page-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 12px 12px 24px;
+}
+
+/* ── Hero title row — exactly mirrors `flex items-center justify-between mb-4 flex-wrap gap-4` ── */
+.hero-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Reference's h4.offset-heading: 24px / 700 / sky-400 / 8px left bar, 16px text inset */
+.offset-heading {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
   color: var(--color-accent);
-  letter-spacing: -0.005em;
-  margin: 0 0 0.5rem;
+  padding: 0 0 0 16px;
+  margin: 20px 0;
+  border-left: 8px solid var(--color-accent);
+  background: none;
+  display: block;
 }
-.hero-title .bar {
-  display: inline-block;
-  width: 4px;
-  height: 1.1rem;
-  background: var(--color-accent);
-  border-radius: 2px;
-  margin-right: 0.55rem;
-}
+
 .hero-lead {
-  font-size: 0.85rem;
-  color: var(--color-muted);
-  max-width: 60rem;
-  line-height: 1.55;
-  margin: 0;
+  color: var(--color-primary);
+  font-size: 16px;
+  line-height: 24px;
+  margin: 0 0 16px;
+  max-width: 1100px;
 }
+
+/* Share cluster — flex with gap 16px, each anchor 36×36 padding 8px radius 8px */
 .hero-share {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  flex-wrap: nowrap;
+  gap: 16px;
 }
 .hero-share .share-label {
-  color: var(--color-muted);
-  font-size: 0.85rem;
-  margin-right: 0.25rem;
+  color: var(--color-primary);
+  font-size: 16px;
 }
-
-/* Brand-coloured share icons (reference uses real brand glyphs+colours) */
 .share-icon {
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  border-radius: 8px;
+  background: transparent;
+  border: 0;
+  color: var(--color-primary);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px; height: 28px;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--color-muted);
-  text-decoration: none;
   cursor: pointer;
-  border: 0;
-  padding: 0;
-  transition: transform 120ms, color 120ms, background-color 120ms;
+  text-decoration: none;
+  transition: background-color 120ms, color 120ms;
 }
-.share-icon:hover { transform: translateY(-1px); }
-.share-icon.linkedin:hover { color: #0a66c2; background: rgba(10,102,194,0.12); }
-.share-icon.x:hover        { color: #ffffff; background: rgba(255,255,255,0.08); }
-.share-icon.bluesky:hover  { color: #1185fe; background: rgba(17,133,254,0.12); }
-.share-icon.facebook:hover { color: #1877f2; background: rgba(24,119,242,0.12); }
-.share-icon.whatsapp:hover { color: #25d366; background: rgba(37,211,102,0.12); }
-.share-icon.email:hover    { color: var(--color-accent); background: rgba(88,166,255,0.12); }
-.share-icon.copy:hover     { color: var(--color-accent); background: rgba(88,166,255,0.12); }
+.share-icon:hover { background: rgba(255,255,255,0.04); }
+.share-icon.linkedin:hover { color: #0a66c2; }
+.share-icon.x:hover        { color: #ffffff; }
+.share-icon.bluesky:hover  { color: #1185fe; }
+.share-icon.facebook:hover { color: #1877f2; }
+.share-icon.whatsapp:hover { color: #25d366; }
+.share-icon.email:hover,
+.share-icon.copy:hover     { color: var(--color-accent); }
+.share-icon svg { width: 20px; height: 20px; }
 
-/* Section heading + grid for chart cards */
-.charts-section {
-  max-width: 80rem;
-  margin: 0 auto;
-  padding: 1.25rem 1.5rem 2rem;
-}
-.section-title {
-  color: var(--color-primary);
-  font-size: 1.05rem;
-  font-weight: 600;
-  margin: 0 0 0.85rem;
-}
+/* ── Card grid: reference uses `flex flex-wrap`, NOT CSS grid ── */
 .chart-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -12px;        /* compensate for per-card 12px margin */
 }
-@media (min-width: 768px) {
-  .chart-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (min-width: 1100px) {
-  .chart-grid { grid-template-columns: repeat(3, 1fr); }
-}
-
-/* Reference-styled chart card: header bar + legend + body + cta */
 .chart-card {
+  flex: 1 1 360px;
+  margin: 12px;
   background-color: var(--color-card);
   border: 1px solid var(--color-surface);
-  border-radius: 8px;
-  padding: 0.85rem 0.85rem 0.65rem;
+  border-radius: 4px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 12px;
+  min-width: 0;
 }
 .chart-card-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--color-surface);
-  padding-bottom: 0.45rem;
+  justify-content: center;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--color-divider);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-primary);
+  text-align: center;
 }
 .chart-card-head h3 {
-  font-size: 0.92rem;
+  font-size: 16px;
   font-weight: 600;
   color: var(--color-primary);
   margin: 0;
 }
 .chart-card-meta {
-  font-size: 0.72rem;
+  font-size: 12px;
   color: var(--color-muted);
+  margin-left: 12px;
+  font-weight: 400;
 }
 .chart-card-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 0.85rem;
-  font-size: 0.7rem;
+  justify-content: center;
+  gap: 6px 16px;
+  font-size: 12px;
   color: var(--color-primary);
 }
-.chart-card-legend .sw { display: inline-flex; align-items: center; gap: 0.3rem; }
+.chart-card-legend .sw { display: inline-flex; align-items: center; gap: 4px; }
 .chart-card-legend .sw i {
   display: inline-block;
-  width: 10px; height: 10px;
+  width: 12px; height: 12px;
   border-radius: 2px;
 }
 .chart-card-body {
-  background: var(--color-dashboard);
-  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 0;
-  min-height: 200px;
+  padding: 4px 0;
+  min-height: 240px;
 }
-.chart-card-body svg { display: block; }
+.chart-card-body svg { display: block; max-width: 100%; }
 .chart-card-cta {
-  font-size: 0.78rem;
+  font-size: 13px;
   color: var(--color-accent);
   text-decoration: none;
-  align-self: flex-end;
+  align-self: center;
 }
 .chart-card-cta:hover { text-decoration: underline; }
 
-/* Live ticker — phase 01.1 shock-counter requirement, reduced footprint */
+/* ── Live ticker — slim row beneath the cards ── */
 .ticker {
-  margin-top: 1rem;
+  margin: 12px;
   background: var(--color-card);
   border: 1px solid var(--color-surface);
-  border-radius: 8px;
-  padding: 0.65rem 0.95rem;
+  border-radius: 4px;
+  padding: 12px 16px;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.4rem 1rem;
-  font-size: 0.85rem;
+  gap: 8px 16px;
+  font-size: 14px;
 }
-.ticker-label { color: var(--color-muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
-.ticker-value { font-size: 1.4rem; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
-.ticker-meta  { color: var(--color-muted); font-size: 0.75rem; }
-.ticker-link  { margin-left: auto; color: var(--color-accent); text-decoration: none; font-size: 0.78rem; }
+.ticker-label { color: var(--color-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+.ticker-value { font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; color: var(--color-accent); }
+.ticker-meta  { color: var(--color-muted); font-size: 12px; }
+.ticker-link  { margin-left: auto; color: var(--color-accent); text-decoration: none; font-size: 13px; }
 .ticker-link:hover { text-decoration: underline; }
 
 /* Share icons in hero — small uniform pill buttons */

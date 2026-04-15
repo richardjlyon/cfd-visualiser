@@ -13,12 +13,9 @@ const chart3c = FileAttachment("./data/chart-3c.json").json();
 ```
 
 ```js
-display(html`<section class="hero">
+display(html`<section class="page-container">
   <div class="hero-row">
-    <div class="hero-text">
-      <h1 class="hero-title"><span class="bar"></span>Live UK Renewables Subsidy</h1>
-      <p class="hero-lead">Real-time renewable energy subsidy data for Great Britain, rebuilt daily from the Low Carbon Contracts Company dataset. Compare what consumers pay against the wholesale market, follow the £-per-tCO₂ avoided, and see who collects the largest share of the subsidy across multiple charts.</p>
-    </div>
+    <h1 class="offset-heading">Live UK Renewables Subsidy</h1>
     <div class="hero-share">
       <span class="share-label">Share:</span>
       <a class="share-icon linkedin" aria-label="Share on LinkedIn" href="https://www.linkedin.com/sharing/share-offsite/?url=https://subsidydashboard.uk/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg></a>
@@ -30,6 +27,7 @@ display(html`<section class="hero">
       <button class="share-icon copy" aria-label="Copy link" onclick="navigator.clipboard?.writeText(location.href)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
     </div>
   </div>
+  <p class="hero-lead">Real-time renewable energy subsidy data for Great Britain, rebuilt daily from the Low Carbon Contracts Company dataset. Compare what consumers pay against the wholesale market, follow the £-per-tCO₂ avoided, and see who collects the largest share of the subsidy across multiple charts.</p>
 </section>`);
 ```
 
@@ -106,9 +104,7 @@ const cardBars = Plot.plot({
 ```
 
 ```js
-display(html`<section class="charts-section">
-  <h2 class="section-title">Live Generation, Subsidy and Avoided Emissions</h2>
-
+display(html`<section class="page-container" style="padding-top:0">
   <div class="chart-grid">
 
     <article class="chart-card">
