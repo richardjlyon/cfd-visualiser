@@ -1,13 +1,13 @@
 export default {
-  title: "CfD Visualiser",
+  title: "SubsidyDashboard",
   root: "src",
   theme: "near-midnight",
   sidebar: false,
   toc: false,
   header: `<header class="topnav">
-  <a href="/" class="brand">⚡ CfD Visualiser</a>
+  <a href="/" class="brand">⚡ SubsidyDashboard</a>
   <nav>
-    <a href="/">Home</a>
+    <a href="/">Live</a>
     <a href="/charts/scissors">Scissors</a>
     <a href="/charts/co2-avoided">£/tCO₂</a>
     <a href="/charts/cumulative-subsidy">Cumulative</a>
