@@ -4,7 +4,7 @@
 
 **Decision:** Option (a) — Push-mirror to GitHub.com and run GitHub Actions there.
 
-Rationale: This repo lives on Gitea (`/Users/rjl/Code/gitea/lowcarboncontracts`).
+Rationale: This repo lives on Gitea (`/Users/rjl/Code/web-cfd-visualiser`).
 GitHub Actions cron only runs on github.com. The recommended default is to maintain
 a push-mirror from Gitea to a public GitHub repo so the `.github/workflows/` files
 execute on GitHub's free hosted runners.

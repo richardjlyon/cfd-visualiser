@@ -642,7 +642,7 @@ Chart computes `subsidy = strike − market` client-side (cheap; avoids duplicat
 **Missing dependencies with no fallback:** None.
 **Missing dependencies with fallback:** All CF / HC setup items have alternatives but the recommendations above are the blessed choices.
 
-**Critical clarification needed (Open Q5):** The repo is on Gitea (`/Users/rjl/Code/gitea/...`). **GitHub Actions cron only runs on github.com.** Either: (a) push/mirror to GitHub for the workflow, (b) use Gitea Actions (compatible subset) on a self-hosted runner, or (c) use Cloudflare Workers Cron Triggers instead. This must be resolved before Plan 01-05.
+**Critical clarification needed (Open Q5):** The repo is on Gitea (`/Users/rjl/Code/...`). **GitHub Actions cron only runs on github.com.** Either: (a) push/mirror to GitHub for the workflow, (b) use Gitea Actions (compatible subset) on a self-hosted runner, or (c) use Cloudflare Workers Cron Triggers instead. This must be resolved before Plan 01-05.
 
 ---
 
@@ -823,7 +823,7 @@ Security enforcement for Phase 1 is light — static site, no user input, no aut
    - **RESOLVED:** Default view = "All" (generation-weighted average, two lines). Round-toggle in Plan 01-04 exposes the 5 per-round views.
 
 5. **Scheduler host — GitHub vs Gitea?**
-   - What we know: Repo lives at `/Users/rjl/Code/gitea/...`.
+   - What we know: Repo lives at `/Users/rjl/Code/...`.
    - What's unclear: Whether the user has a GitHub mirror; whether Gitea Actions is self-hosted and usable; whether Cloudflare Workers Cron is preferred.
    - Recommendation: **Resolve before Plan 01-05.** Cheapest path: mirror to GitHub for Actions; fallback: Gitea Actions on self-hosted runner; last-resort: Cloudflare Workers Cron invoking a GitHub webhook.
    - **RESOLVED:** GitHub Actions via push-mirror is the default (option-a). Explicit checkpoint in Plan 01-05 Task 1 lets the user override to Gitea Actions (option-b) or Cloudflare Workers Cron (option-c).

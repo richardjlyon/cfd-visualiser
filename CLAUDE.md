@@ -161,3 +161,7 @@ Do not make direct repo edits outside a GSD workflow unless the user explicitly 
 > Profile not yet configured. Run `/gsd-profile-user` to generate your developer profile.
 > This section is managed by `generate-claude-profile` -- do not edit manually.
 <!-- GSD:profile-end -->
+
+## Cowork integration (Richard's machine)
+
+This repo also has a Cowork project at `/Users/rjl/Resilio/claude-cowork/project/cfd-payment/`. When working from a Cowork-aware Claude session, read `claude.md` and `memory.md` in that folder for cross-project context, voice notes, and current activity. Update `memory.md` after significant decisions or status changes.

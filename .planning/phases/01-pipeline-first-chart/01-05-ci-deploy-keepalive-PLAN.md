@@ -121,7 +121,7 @@ Output: Two workflow files, OG card generator + test, ops runbook, analytics bea
   <name>Task 1: Resolve scheduler location (RESEARCH Open Q5)</name>
   <decision>Where does the daily cron run?</decision>
   <context>
-    This repo is on Gitea (`/Users/rjl/Code/gitea/lowcarboncontracts`). GitHub Actions cron only runs on github.com. RESEARCH.md flags this as Open Q5 and blocks final wiring. Three options exist; each has downstream consequences for the workflow file, secrets storage, and the keepalive mechanism.
+    This repo is on Gitea (`/Users/rjl/Code/web-cfd-visualiser`). GitHub Actions cron only runs on github.com. RESEARCH.md flags this as Open Q5 and blocks final wiring. Three options exist; each has downstream consequences for the workflow file, secrets storage, and the keepalive mechanism.
   </context>
   <options>
     <option id="option-a">
