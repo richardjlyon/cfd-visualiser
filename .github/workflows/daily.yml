@@ -1,7 +1,10 @@
 name: daily-rebuild
 on:
-  schedule:
-    - cron: '30 6 * * *'   # 06:30 UTC — see docs/OPS.md for rationale
+  # Scheduled rebuild DISABLED 2026-07-09 — project shelved as superseded by the
+  # Subsidy Clock (subsidyclock.co.uk). Kept runnable on-demand only; re-add the
+  # `schedule:` block below to resume the daily auto-publish.
+  #   schedule:
+  #     - cron: '30 6 * * *'   # 06:30 UTC — see docs/OPS.md for rationale
   workflow_dispatch:
 
 permissions:
