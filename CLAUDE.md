@@ -161,3 +161,7 @@ Do not make direct repo edits outside a GSD workflow unless the user explicitly 
 > Profile not yet configured. Run `/gsd-profile-user` to generate your developer profile.
 > This section is managed by `generate-claude-profile` -- do not edit manually.
 <!-- GSD:profile-end -->
+
+## Project knowledge
+
+Project knowledge lives in the owner's private knowledge base — sessions with access should read the project note there. This project is SHELVED (2026-07-09), superseded by the Subsidy Clock.
